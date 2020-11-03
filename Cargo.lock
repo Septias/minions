@@ -2014,7 +2014,6 @@ name = "minions"
 version = "0.1.0"
 dependencies = [
  "amethyst",
- "amethyst_rendy",
  "log",
 ]
 

@@ -3,11 +3,25 @@
     @import /amethyst_assets/src/prefab/mod.rs#Prefab
     @import ../../sphere/main.rs#MyPrefabData
     Prefab<MyPrefabData>
-    
 */
 
 Prefab (
     entities: [
+        (
+            data: (
+                graphics: (
+                    mesh: Shape((shape: Plane((10, 10)) )),
+                    material: (
+                        albedo: Generate(Srgba(0.0, 0.0, 1.0, 1.0)),
+                    ),
+                ),
+                transform: (
+                    //scale: (0.1, 0.1, .1),
+                    rotation: (-0.707, 0.0, 0.0, 0.707),
+                    translation: (0.0, 0.0, 0.0),
+                ),
+            ),
+        ),
         (
             data: (
                 transform: (
@@ -27,8 +41,8 @@ Prefab (
         (
             data: (
                 transform: (
-                    translation: (0.0, 0.0, -4.0),
-                    rotation: (0.0, 1.0, 0.0, 0.0),
+                    translation: (0.0, 4.0, 5.0),
+                    rotation: (-0.21, 0 , 0, 0.976),
                 ),
                 camera: Perspective(
                     aspect: 1.3,
