@@ -9,21 +9,6 @@ Prefab (
     entities: [
         (
             data: (
-                graphics: (
-                    mesh: Shape((shape: Plane((10, 10)) )),
-                    material: (
-                        albedo: Generate(Srgba(0.0, 0.0, 1.0, 1.0)),
-                    ),
-                ),
-                transform: (
-                    //scale: (0.1, 0.1, .1),
-                    rotation: (-0.707, 0.0, 0.0, 0.707),
-                    translation: (0.0, 0.0, 0.0),
-                ),
-            ),
-        ),
-        (
-            data: (
                 transform: (
                     translation: (2.0, 2.0, -2.0),
                     rotation: (0.0, 1.0, 0.0, 0.0),
