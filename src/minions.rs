@@ -17,8 +17,8 @@ use amethyst::{
     SimpleState,
 };
 
+use crate::config::ArenaConfig;
 use crate::MyPrefabData;
-
 #[derive(Default)]
 pub struct Minions {}
 
@@ -59,10 +59,8 @@ fn initialize_debug_lines(world: &mut World) {
 }
 
 fn initialize_ground(world: &mut World) {
-    let (width, height) = (5, 5);
-
     let mat_defaults = world.read_resource::<MaterialDefaults>().0.clone();
-    let mesh = create_mesh(world);
+    let mesh = create_plane(world);
     let albedo = create_albedo(world);
     let roughness = 1.0f32;
     let metallic = 1.0f32;
@@ -88,17 +86,37 @@ fn initialize_ground(world: &mut World) {
         },
     );
 
-    let mut pos = Transform::default();
-    pos.append_rotation_x_axis(-1.5707);
-    world.create_entity().with(mesh).with(mtl).with(pos).build();
-    /* for _ in 0..width {
-        for _ in 0..height {
-            world.create_entity().build();
+    let (width, height, tile_size) = {
+        let arena_config = world.read_resource::<ArenaConfig>();
+        (
+            arena_config.width,
+            arena_config.height,
+            arena_config.tile_size,
+        )
+    };
+
+    let x0 = -(tile_size * width as f32 / 2.);
+    let y0 = -(tile_size * height as f32 / 2.);
+    for x in 0..width {
+        for y in 0..height {
+            let mut pos = Transform::default();
+            pos.append_rotation_x_axis(-1.5707);
+            pos.set_translation_xyz(
+                x0 + (tile_size * x as f32),
+                0.0,
+                y0 + (tile_size * y as f32),
+            );
+            world
+                .create_entity()
+                .with(pos)
+                .with(mesh.clone())
+                .with(mtl.clone())
+                .build();
         }
-    } */
+    }
 }
 
-fn create_mesh(world: &mut World) -> Handle<Mesh> {
+fn create_plane(world: &mut World) -> Handle<Mesh> {
     world.exec(|loader: AssetLoaderSystemData<'_, Mesh>| {
         loader.load_from_data(
             Shape::Plane(None)

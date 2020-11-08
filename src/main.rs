@@ -13,7 +13,6 @@ use amethyst::{
     Application, GameDataBuilder,
 };
 use std::{path::Path, time::Duration};
-
 pub type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
 
 mod config;

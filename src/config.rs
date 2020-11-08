@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct ArenaConfig {
     pub height: i32,
     pub width: i32,
+    pub tile_size: f32,
 }
 
 impl Default for ArenaConfig {
@@ -11,6 +12,7 @@ impl Default for ArenaConfig {
         ArenaConfig {
             height: 5,
             width: 5,
+            tile_size: 1.0,
         }
     }
 }
