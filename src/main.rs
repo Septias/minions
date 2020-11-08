@@ -1,6 +1,8 @@
 use amethyst::{
     assets::PrefabLoaderSystemDesc,
+    core::frame_limiter::FrameRateLimitStrategy,
     core::TransformBundle,
+    prelude::*,
     renderer::{
         rendy::mesh::{Normal, Position, TexCoord},
         types::DefaultBackend,
@@ -10,10 +12,13 @@ use amethyst::{
     utils::scene::BasicScenePrefab,
     Application, GameDataBuilder,
 };
+use std::{path::Path, time::Duration};
 
 pub type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
 
+mod config;
 mod minions;
+use crate::config::ArenaConfig;
 use crate::minions::Minions;
 
 fn main() -> amethyst::Result<()> {
@@ -22,7 +27,8 @@ fn main() -> amethyst::Result<()> {
     let app_root = application_root_dir()?;
     let display_config_path = app_root.join("config/display.ron");
     let assets_dir = app_root.join("assets/");
-
+    let arena_config = ArenaConfig::load("config/config.ron")?;
+    println!("{:?}", &arena_config);
     let game_data = GameDataBuilder::default()
         .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(TransformBundle::new())?
@@ -36,8 +42,13 @@ fn main() -> amethyst::Result<()> {
                 )
                 .with_plugin(RenderShaded3D::default()),
         )?;
-
-    let mut game = Application::new(assets_dir, Minions::default(), game_data)?;
+    let mut game = Application::build(assets_dir, Minions::default())?
+        .with_frame_limit(
+            FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
+            144,
+        )
+        .with_resource(arena_config)
+        .build(game_data)?;
     game.run();
     Ok(())
 }

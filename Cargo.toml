@@ -9,6 +9,7 @@ version = "0.1.0"
 [dependencies]
 amethyst = {version = "0.15.2", features = ["no-slow-safety-checks"]}
 log = {version = "0.4.8", features = ["serde"]}
+serde = {version = "1.0.104", features = ["derive"]}
 
 [features]
 default = ["vulkan"]
