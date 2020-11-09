@@ -110,7 +110,11 @@ fn initialize_ground(world: &mut World) {
                 0.0,
                 z0 + (tile_size * y as f32),
             );
-            pos.set_scale(Vector3::new(0.5, 0.5, 0.5));
+            pos.set_scale(Vector3::new(
+                0.5 * tile_size,
+                0.5 * tile_size,
+                0.5 * tile_size,
+            ));
             world
                 .create_entity()
                 .with(pos)

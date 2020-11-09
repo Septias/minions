@@ -1,5 +1,5 @@
 (
     depth: 4,
     width: 4,
-    tile_size: 1.0,
+    tile_size: 1.5,
 )
