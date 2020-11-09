@@ -1,8 +1,10 @@
+// all config-related stuff
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ArenaConfig {
-    pub height: i32,
+    pub depth: i32,
     pub width: i32,
     pub tile_size: f32,
 }
@@ -10,7 +12,7 @@ pub struct ArenaConfig {
 impl Default for ArenaConfig {
     fn default() -> Self {
         ArenaConfig {
-            height: 5,
+            depth: 5,
             width: 5,
             tile_size: 1.0,
         }

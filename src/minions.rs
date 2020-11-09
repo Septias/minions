@@ -1,3 +1,5 @@
+// Initialize game world
+
 use amethyst::{
     assets::{AssetLoaderSystemData, Handle, PrefabLoader, RonFormat},
     core::{
@@ -40,17 +42,17 @@ fn initialize_debug_lines(world: &mut World) {
 
     debug_lines_component.add_direction(
         Point3::new(0.0, 0.0001, 0.0),
-        Vector3::new(0.2, 0.0, 0.0),
+        Vector3::new(1.0, 0.0, 0.0),
         Srgba::new(1.0, 0.0, 0.23, 1.0),
     );
     debug_lines_component.add_direction(
         Point3::new(0.0, 0.0, 0.0),
-        Vector3::new(0.0, 0.2, 0.0),
+        Vector3::new(0.0, 1.0, 0.0),
         Srgba::new(0.5, 0.85, 0.1, 1.0),
     );
     debug_lines_component.add_direction(
         Point3::new(0.0, 0.0001, 0.0),
-        Vector3::new(0.0, 0.0, 0.2),
+        Vector3::new(0.0, 0.0, 1.0),
         Srgba::new(0.2, 0.75, 0.93, 1.0),
     );
 
@@ -86,26 +88,29 @@ fn initialize_ground(world: &mut World) {
         },
     );
 
-    let (width, height, tile_size) = {
+    let (width, depth, tile_size) = {
         let arena_config = world.read_resource::<ArenaConfig>();
         (
             arena_config.width,
-            arena_config.height,
+            arena_config.depth,
             arena_config.tile_size,
         )
     };
 
+    // initialize planes
     let x0 = -(tile_size * width as f32 / 2.);
-    let y0 = -(tile_size * height as f32 / 2.);
+    let z0 = -(tile_size * depth as f32 / 2.);
+
     for x in 0..width {
-        for y in 0..height {
+        for y in 0..depth {
             let mut pos = Transform::default();
             pos.append_rotation_x_axis(-1.5707);
             pos.set_translation_xyz(
                 x0 + (tile_size * x as f32),
                 0.0,
-                y0 + (tile_size * y as f32),
+                z0 + (tile_size * y as f32),
             );
+            pos.set_scale(Vector3::new(0.5, 0.5, 0.5));
             world
                 .create_entity()
                 .with(pos)
@@ -114,6 +119,29 @@ fn initialize_ground(world: &mut World) {
                 .build();
         }
     }
+
+    // create grid-lines
+    let mut debug_lines_component = DebugLinesComponent::with_capacity((width * depth) as usize);
+    let main_color = Srgba::new(0.0, 0.0, 0.0, 0.8);
+    for x in 0..=width {
+        let position = Point3::new(
+            x0 - tile_size / 2.0 + (x as f32 * tile_size),
+            0.0,
+            z0 - tile_size / 2.00,
+        );
+        let direction = Vector3::new(0.0, 0.0, tile_size * depth as f32);
+        debug_lines_component.add_direction(position, direction, main_color);
+    }
+    for z in 0..=depth {
+        let position = Point3::new(
+            x0 - tile_size / 2.0,
+            0.0,
+            z0 - tile_size / 2.00 + (z as f32 * tile_size),
+        );
+        let direction = Vector3::new(tile_size * width as f32, 0.0, 0.0 as f32);
+        debug_lines_component.add_direction(position, direction, main_color);
+    }
+    world.create_entity().with(debug_lines_component).build();
 }
 
 fn create_plane(world: &mut World) -> Handle<Mesh> {
