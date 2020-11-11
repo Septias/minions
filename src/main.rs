@@ -1,19 +1,15 @@
 use amethyst::{
-    assets::PrefabLoaderSystemDesc,
     core::frame_limiter::FrameRateLimitStrategy,
     core::TransformBundle,
     prelude::*,
     renderer::{
-        rendy::mesh::{Normal, Position, TexCoord},
         types::DefaultBackend,
         RenderDebugLines, RenderShaded3D, RenderSkybox, RenderToWindow, RenderingBundle,
     },
     utils::application_root_dir,
-    utils::scene::BasicScenePrefab,
     Application, GameDataBuilder,
 };
 use std::{path::Path, time::Duration};
-pub type MyPrefabData = BasicScenePrefab<(Vec<Position>, Vec<Normal>, Vec<TexCoord>)>;
 
 mod config;
 mod minions;
@@ -29,7 +25,7 @@ fn main() -> amethyst::Result<()> {
     let arena_config = ArenaConfig::load("config/config.ron")?;
     println!("{:?}", &arena_config);
     let game_data = GameDataBuilder::default()
-        .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
+        // .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(TransformBundle::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()

@@ -1,7 +1,6 @@
 // Initialize game world
 
 use amethyst::{
-    assets::{AssetLoaderSystemData, Handle, PrefabLoader, RonFormat},
     core::{
         ecs::{Builder, WorldExt},
         math::{Point3, Vector3},
@@ -20,16 +19,15 @@ use amethyst::{
 };
 
 use crate::config::ArenaConfig;
-use crate::MyPrefabData;
 #[derive(Default)]
 pub struct Minions {}
 
 impl SimpleState for Minions {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let handle = data.world.exec(|loader: PrefabLoader<'_, MyPrefabData>| {
+        /*let handle = data.world.exec(|loader: PrefabLoader<'_, MyPrefabData>| {
             loader.load("prefab/sphere.ron", RonFormat, ())
         });
-        data.world.create_entity().with(handle).build();
+        data.world.create_entity().with(handle).build(); */
         initialize_debug_lines(data.world);
         initialize_ground(data.world);
     }
