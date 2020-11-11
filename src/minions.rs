@@ -1,14 +1,18 @@
 // Initialize game world
 
 use amethyst::{
+    assets::{AssetLoaderSystemData, Handle},
     core::{
         ecs::{Builder, WorldExt},
         math::{Point3, Vector3},
         Transform,
     },
     prelude::*,
+    renderer::palette::Srgb,
+    renderer::Camera,
     renderer::{
         debug_drawing::{DebugLines, DebugLinesComponent, DebugLinesParams},
+        light::{DirectionalLight, Light},
         loaders::load_from_linear_rgba,
         palette::{LinSrgba, Srgba},
         rendy::mesh::{Normal, Position, Tangent, TexCoord},
@@ -18,7 +22,7 @@ use amethyst::{
     SimpleState,
 };
 
-use crate::config::ArenaConfig;
+use crate::{components::CameraControlTag, config::ArenaConfig};
 #[derive(Default)]
 pub struct Minions {}
 
@@ -30,6 +34,8 @@ impl SimpleState for Minions {
         data.world.create_entity().with(handle).build(); */
         initialize_debug_lines(data.world);
         initialize_ground(data.world);
+        initialize_camera(data.world);
+        initialize_light(data.world);
     }
 }
 
@@ -164,4 +170,29 @@ fn create_albedo(world: &mut World) -> Handle<Texture> {
             (),
         )
     })
+}
+
+fn initialize_camera(world: &mut World) {
+    let mut transform = Transform::default();
+    transform.set_translation_xyz(0.0, 4.0, 5.0);
+    transform.prepend_rotation_x_axis(-std::f32::consts::PI / 4.0);
+    world
+        .create_entity()
+        .with(Camera::perspective(1.3, 1.0471975512, 0.1))
+        .with(transform)
+        .with(CameraControlTag)
+        .build();
+}
+
+fn initialize_light(world: &mut World) {
+    let mut pos = Transform::default();
+    pos.prepend_translation_y(10.0);
+
+    let light: Light = DirectionalLight {
+        color: Srgb::new(1.0, 1.0, 1.0),
+        intensity: 5.0,
+        direction: Vector3::new(0.0, -1.0, 0.0),
+    }
+    .into();
+    world.create_entity().with(light).with(pos).build();
 }
