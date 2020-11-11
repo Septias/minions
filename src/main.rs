@@ -15,6 +15,7 @@ mod config;
 mod minions;
 use crate::config::ArenaConfig;
 use crate::minions::Minions;
+};
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
@@ -23,7 +24,6 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = app_root.join("config/display.ron");
     let assets_dir = app_root.join("assets/");
     let arena_config = ArenaConfig::load("config/config.ron")?;
-    println!("{:?}", &arena_config);
     let game_data = GameDataBuilder::default()
         // .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(TransformBundle::new())?
