@@ -25,7 +25,7 @@ impl<'s> System<'s> for CameraSystem {
     fn run(&mut self, (mut transforms, camera_tag, focus, input, config): Self::SystemData) {
         let focused = focus.is_focused;
         for (transform, _) in (&mut transforms, &camera_tag).join() {
-            //if focus.is_focused;
+            if focused {
                 let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
                 transform.move_right(right * config.movement_factor);
 
@@ -33,6 +33,7 @@ impl<'s> System<'s> for CameraSystem {
                 transform.move_forward(zoom);
 
                 let forward = input.axis_value(&AxisBinding::Forward).unwrap_or(0.0);
+                transform.append_translation_xyz(0.0, 0.0, forward * config.movement_factor);
             }
         }
     }
