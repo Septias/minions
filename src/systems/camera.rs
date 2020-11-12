@@ -1,14 +1,14 @@
 use crate::{components::CameraControlTag, input::AxisBinding};
 use amethyst::{
+    config::Config,
     controls::WindowFocus,
-    core::Transform,
+    core::{math::Vector3, Transform},
     derive::SystemDesc,
     ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::InputHandler,
 };
-use log::info;
 
-use crate::input::MovementBindingTypes;
+use crate::{config::ArenaConfig, input::MovementBindingTypes};
 
 #[derive(SystemDesc)]
 pub struct CameraSystem;
@@ -19,14 +19,20 @@ impl<'s> System<'s> for CameraSystem {
         ReadStorage<'s, CameraControlTag>,
         Read<'s, WindowFocus>,
         Read<'s, InputHandler<MovementBindingTypes>>,
+        Read<'s, ArenaConfig>,
     );
 
-    fn run(&mut self, (mut transforms, camera_tag, _focus, input): Self::SystemData) {
+    fn run(&mut self, (mut transforms, camera_tag, focus, input, config): Self::SystemData) {
+        let focused = focus.is_focused;
         for (transform, _) in (&mut transforms, &camera_tag).join() {
             //if focus.is_focused;
-            let horizontal = input.axis_value(&AxisBinding::Horizontal).unwrap_or(0.0);
-            if horizontal.abs() > 0.0 {
-                transform.move_right(horizontal * 0.01);
+                let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
+                transform.move_right(right * config.movement_factor);
+
+                let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
+                transform.move_forward(zoom);
+
+                let forward = input.axis_value(&AxisBinding::Forward).unwrap_or(0.0);
             }
         }
     }

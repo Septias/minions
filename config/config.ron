@@ -1,5 +1,7 @@
 (
-    depth: 20,
-    width: 15,
-    tile_size: .5,
+    depth: 20,  //map
+    width: 15,	//map
+    tile_size: .5,	//map
+	camera_tilt: -0.60,
+	movement_factor: 0.2,
 )

@@ -28,13 +28,18 @@ pub struct Minions {}
 
 impl SimpleState for Minions {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        /*let handle = data.world.exec(|loader: PrefabLoader<'_, MyPrefabData>| {
-            loader.load("prefab/sphere.ron", RonFormat, ())
-        });
-        data.world.create_entity().with(handle).build(); */
+        let (width, depth, tile_size, camera_tilt) = {
+            let arena_config = data.world.read_resource::<ArenaConfig>();
+            (
+                arena_config.width,
+                arena_config.depth,
+                arena_config.tile_size,
+                arena_config.camera_tilt,
+            )
+        };
         initialize_debug_lines(data.world);
-        initialize_ground(data.world);
-        initialize_camera(data.world);
+        initialize_ground(data.world, width, depth, tile_size);
+        initialize_camera(data.world, camera_tilt);
         initialize_light(data.world);
     }
 }
@@ -64,13 +69,14 @@ fn initialize_debug_lines(world: &mut World) {
     world.create_entity().with(debug_lines_component).build();
 }
 
-fn initialize_ground(world: &mut World) {
+fn initialize_ground(world: &mut World, width: i32, depth: i32, tile_size: f32) {
     let mat_defaults = world.read_resource::<MaterialDefaults>().0.clone();
     let mesh = create_plane(world);
     let albedo = create_albedo(world);
     let roughness = 1.0f32;
     let metallic = 1.0f32;
 
+    // create material
     let mtl = world.exec(
         |(mtl_loader, tex_loader): (
             AssetLoaderSystemData<'_, Material>,
@@ -91,15 +97,6 @@ fn initialize_ground(world: &mut World) {
             )
         },
     );
-
-    let (width, depth, tile_size) = {
-        let arena_config = world.read_resource::<ArenaConfig>();
-        (
-            arena_config.width,
-            arena_config.depth,
-            arena_config.tile_size,
-        )
-    };
 
     // initialize planes
     let x0 = -(tile_size * width as f32 / 2.);
@@ -172,10 +169,10 @@ fn create_albedo(world: &mut World) -> Handle<Texture> {
     })
 }
 
-fn initialize_camera(world: &mut World) {
+fn initialize_camera(world: &mut World, camera_tilt: f32) {
     let mut transform = Transform::default();
-    transform.set_translation_xyz(0.0, 4.0, 5.0);
-    transform.prepend_rotation_x_axis(-std::f32::consts::PI / 4.0);
+    transform.set_translation_xyz(0.0, 2.0, 5.0);
+    transform.prepend_rotation_x_axis(camera_tilt);
     world
         .create_entity()
         .with(Camera::perspective(1.3, 1.0471975512, 0.1))

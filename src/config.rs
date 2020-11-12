@@ -7,6 +7,8 @@ pub struct ArenaConfig {
     pub depth: i32,
     pub width: i32,
     pub tile_size: f32,
+	pub camera_tilt: f32,
+	pub movement_factor: f32,
 }
 
 impl Default for ArenaConfig {
@@ -15,6 +17,8 @@ impl Default for ArenaConfig {
             depth: 5,
             width: 5,
             tile_size: 1.0,
+			camera_tilt: -std::f32::consts::PI / 4.0,
+			movement_factor: 0.2
         }
     }
 }

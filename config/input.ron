@@ -1,7 +1,8 @@
 (
     axes: {
-        Vertical: Emulated(pos: Key(V), neg: Key(I)),
-        Horizontal: Emulated(pos: Key(A), neg: Key(U)),
+        Right: Emulated(pos: Key(A), neg: Key(U)),
+        Forward: Emulated(pos: Key(V), neg: Key(I)),
+		Zoom: MouseWheel(horizontal: false),
     }, 
 	actions: {}
 )
