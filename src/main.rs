@@ -36,13 +36,11 @@ fn main() -> amethyst::Result<()> {
 
     // create game_data with GameDataBuilder
     let game_data = GameDataBuilder::default()
-        // .with_system_desc(PrefabLoaderSystemDesc::<MyPrefabData>::default(), "", &[])
         .with_bundle(input_bundle)?
         .with_bundle(TransformBundle::new())?
         .with_bundle(MinionsBundle)?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
-                .with_plugin(RenderSkybox::default())
                 .with_plugin(RenderDebugLines::default())
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)?
