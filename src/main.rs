@@ -44,7 +44,7 @@ fn main() -> amethyst::Result<()> {
                 .with_plugin(RenderDebugLines::default())
                 .with_plugin(
                     RenderToWindow::from_config_path(display_config_path)?
-                        .with_clear([0.34, 0.36, 0.52, 1.0]),
+                        .with_clear([0.05, 0.05, 0.05, 1.0]),
                 )
                 .with_plugin(RenderShaded3D::default()),
         )?;

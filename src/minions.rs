@@ -163,7 +163,7 @@ fn create_plane(world: &mut World) -> Handle<Mesh> {
 fn create_albedo(world: &mut World) -> Handle<Texture> {
     world.exec(|loader: AssetLoaderSystemData<'_, Texture>| {
         loader.load_from_data(
-            load_from_linear_rgba(LinSrgba::new(1.0, 1.0, 1.0, 0.5)).into(),
+            load_from_linear_rgba(LinSrgba::new(0.005, 0.005, 0.005, 1.0)).into(),
             (),
         )
     })
