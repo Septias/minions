@@ -1,14 +1,13 @@
 use crate::{components::CameraControlTag, input::AxisBinding};
 use amethyst::{
-    config::Config,
     controls::WindowFocus,
-    core::{math::Vector3, Transform},
+    core::Transform,
     derive::SystemDesc,
     ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::InputHandler,
 };
 
-use crate::{config::ArenaConfig, input::MovementBindingTypes};
+use crate::{config::CameraConfig, input::MovementBindingTypes};
 
 #[derive(SystemDesc)]
 pub struct CameraSystem;
@@ -19,7 +18,7 @@ impl<'s> System<'s> for CameraSystem {
         ReadStorage<'s, CameraControlTag>,
         Read<'s, WindowFocus>,
         Read<'s, InputHandler<MovementBindingTypes>>,
-        Read<'s, ArenaConfig>,
+        Read<'s, CameraConfig>,
     );
 
     fn run(&mut self, (mut transforms, camera_tag, focus, input, config): Self::SystemData) {

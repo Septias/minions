@@ -19,7 +19,7 @@ mod input;
 mod minions;
 mod systems;
 use crate::{
-    bundle::MinionsBundle, config::ArenaConfig, input::MovementBindingTypes, minions::Minions,
+    bundle::MinionsBundle, config::MinionsConfig, input::MovementBindingTypes, minions::Minions,
 };
 
 fn main() -> amethyst::Result<()> {
@@ -32,7 +32,7 @@ fn main() -> amethyst::Result<()> {
     let input_bundle =
         InputBundle::<MovementBindingTypes>::new().with_bindings_from_file(&input_path)?;
     let assets_dir = app_root.join("assets/");
-    let arena_config = ArenaConfig::load("config/config.ron")?;
+    let minions_config = MinionsConfig::load("config/config.ron")?;
 
     // create game_data with GameDataBuilder
     let game_data = GameDataBuilder::default()
@@ -53,7 +53,8 @@ fn main() -> amethyst::Result<()> {
             FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
             144,
         )
-        .with_resource(arena_config)
+        .with_resource(minions_config.arena)
+        .with_resource(minions_config.camera)
         .build(game_data)?;
     game.run();
     Ok(())
