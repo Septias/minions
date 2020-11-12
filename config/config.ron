@@ -3,5 +3,5 @@
     width: 15,	//map
     tile_size: .5,	//map
 	camera_tilt: -0.60,
-	movement_factor: 0.2,
+	movement_factor: 0.1,
 )

@@ -6,7 +6,6 @@ use amethyst::{
     error::Error,
     prelude::SystemDesc,
 };
-
 pub struct MinionsBundle;
 
 impl<'a, 'b> SystemBundle<'a, 'b> for MinionsBundle {

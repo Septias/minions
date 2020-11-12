@@ -33,7 +33,7 @@ impl<'s> System<'s> for CameraSystem {
                 transform.move_forward(zoom);
 
                 let forward = input.axis_value(&AxisBinding::Forward).unwrap_or(0.0);
-                transform.append_translation_xyz(0.0, 0.0, forward * config.movement_factor);
+                transform.prepend_translation_z(-forward * config.movement_factor);
             }
         }
     }
