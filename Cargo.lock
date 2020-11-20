@@ -73,8 +73,7 @@ dependencies = [
 [[package]]
 name = "amethyst"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "681f00d516b504bd2f1933285b0cf2e5cbf1dc8ea6006aa27baf747709e1df4d"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_animation",
  "amethyst_assets",
@@ -110,8 +109,7 @@ dependencies = [
 [[package]]
 name = "amethyst_animation"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56b9d4f573831744ad277a1a95db13ce2da07a2342c9999f7716ae32caf98298"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_core",
@@ -130,8 +128,7 @@ dependencies = [
 [[package]]
 name = "amethyst_assets"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f703a44161d091a5187f5ae222c8fec391118627d6aeea8cc07a2c167d03cb2"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_core",
  "amethyst_derive",
@@ -155,8 +152,7 @@ dependencies = [
 [[package]]
 name = "amethyst_audio"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1439c4e590d69f8399b9fc27f643778e699f8faf4989128d67db14bb0dcc5dd2"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_core",
@@ -172,8 +168,7 @@ dependencies = [
 [[package]]
 name = "amethyst_config"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "587b1ab5cec425194e727f229ff018d7c33a6af2a129ac6cd6243cedd06aef63"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "log",
  "ron",
@@ -183,8 +178,7 @@ dependencies = [
 [[package]]
 name = "amethyst_controls"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "165f55291f555e5e602fb421eb86b10df7681a91e31d4208feb51a7c3491cb8f"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_core",
@@ -200,8 +194,7 @@ dependencies = [
 [[package]]
 name = "amethyst_core"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52ef753ed8309c2efe09218de2362e5c83ab131fe2d6614245beb9beecb51434"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "alga",
  "alga_derive",
@@ -223,8 +216,7 @@ dependencies = [
 [[package]]
 name = "amethyst_derive"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e93c5b508a37aa7f8ce0b0035fb6e2b344d482597fccd89ff6d87e350c9ffcae"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "heck",
  "proc-macro-crate",
@@ -237,8 +229,7 @@ dependencies = [
 [[package]]
 name = "amethyst_error"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bc703640201c6e9f36938a380801d6904af92f2ab472bde4fd920ec8b6faeb8"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "backtrace",
 ]
@@ -246,8 +237,7 @@ dependencies = [
 [[package]]
 name = "amethyst_input"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d886de7cd1508ba83e55e118f15eecff0dccf698ec61997d520dd26eca2c9559"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_config",
  "amethyst_core",
@@ -264,8 +254,7 @@ dependencies = [
 [[package]]
 name = "amethyst_locale"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6008717624d2386472e6b05a33599f544a8492ea5035171df5227a01b25a75a"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_core",
@@ -278,8 +267,7 @@ dependencies = [
 [[package]]
 name = "amethyst_network"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a139a978f0e3327bedf9459363302e09f4ac2ce52a298b80c88f9361f66c157f"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_core",
  "amethyst_error",
@@ -291,8 +279,7 @@ dependencies = [
 [[package]]
 name = "amethyst_rendy"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7177b181290f5d0c7afe429061eea4d64deadb963d94b8c83062bf2573e14b90"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_config",
@@ -321,8 +308,7 @@ dependencies = [
 [[package]]
 name = "amethyst_ui"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27ec756b75d7090229615aa123e9cd9c85783d3badf6efb255a7b3a1b9a9dd94"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_audio",
@@ -355,8 +341,7 @@ dependencies = [
 [[package]]
 name = "amethyst_utils"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3adc2e19f854b990f65e162367a628df0296e62d17cb3da822e409df82924e34"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_assets",
  "amethyst_controls",
@@ -376,8 +361,7 @@ dependencies = [
 [[package]]
 name = "amethyst_window"
 version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "840a2eec68a17ebaa87702e85b3aba1a8391f6f910106db00390dd5a6fbf7b81"
+source = "git+https://github.com/amethyst/amethyst#d31c82cca90e0167ff7bf29fec171ca0fa899ce0"
 dependencies = [
  "amethyst_config",
  "amethyst_core",

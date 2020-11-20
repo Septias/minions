@@ -1,11 +1,12 @@
+#![feature(clamp)]
+
 use amethyst::{
     core::frame_limiter::FrameRateLimitStrategy,
     core::TransformBundle,
     input::InputBundle,
     prelude::*,
     renderer::{
-        types::DefaultBackend, RenderDebugLines, RenderShaded3D, RenderSkybox, RenderToWindow,
-        RenderingBundle,
+        types::DefaultBackend, RenderDebugLines, RenderShaded3D, RenderToWindow, RenderingBundle,
     },
     utils::application_root_dir,
     Application, GameDataBuilder,

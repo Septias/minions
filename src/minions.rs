@@ -2,11 +2,15 @@
 
 use amethyst::{
     assets::{AssetLoaderSystemData, Handle},
+    core::math::{distance, Point2, Vector2},
     core::{
         ecs::{Builder, WorldExt},
+        geometry::Plane,
         math::{Point3, Vector3},
         Transform,
     },
+    ecs::Component,
+    ecs::DenseVecStorage,
     prelude::*,
     renderer::palette::Srgb,
     renderer::Camera,
@@ -21,26 +25,39 @@ use amethyst::{
     },
     SimpleState,
 };
+use std::f32::consts::PI;
 
-use crate::{components::CameraControlTag, config::ArenaConfig};
+use crate::{
+    components::{CameraBorders, CameraControlTag},
+    config::{ArenaConfig, CameraConfig},
+};
 #[derive(Default)]
 pub struct Minions {}
 
 impl SimpleState for Minions {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let (width, depth, tile_size, camera_tilt) = {
-            let arena_config = data.world.read_resource::<ArenaConfig>();
-            (
-                arena_config.width,
-                arena_config.depth,
-                arena_config.tile_size,
-                arena_config.camera_tilt,
-            )
-        };
         initialize_debug_lines(data.world);
-        initialize_ground(data.world, width, depth, tile_size);
-        initialize_camera(data.world, camera_tilt);
+        initialize_ground(data.world);
+        initialize_camera(data.world);
         initialize_light(data.world);
+    }
+}
+
+#[derive(Debug)]
+pub struct WorldBorders {
+    pub right: f32,
+    pub left: f32,
+    pub bottom: f32,
+    pub top: f32,
+}
+impl Default for WorldBorders {
+    fn default() -> Self {
+        WorldBorders {
+            right: 1.0,
+            left: -1.0,
+            bottom: -1.0,
+            top: 1.0,
+        }
     }
 }
 
@@ -69,12 +86,22 @@ fn initialize_debug_lines(world: &mut World) {
     world.create_entity().with(debug_lines_component).build();
 }
 
-fn initialize_ground(world: &mut World, width: i32, depth: i32, tile_size: f32) {
+fn initialize_ground(world: &mut World) {
     let mat_defaults = world.read_resource::<MaterialDefaults>().0.clone();
     let mesh = create_plane(world);
     let albedo = create_albedo(world);
     let roughness = 1.0f32;
     let metallic = 1.0f32;
+
+    // load config
+    let (width, depth, tile_size) = {
+        let arena_config = world.read_resource::<ArenaConfig>();
+        (
+            arena_config.width,
+            arena_config.depth,
+            arena_config.tile_size,
+        )
+    };
 
     // create material
     let mtl = world.exec(
@@ -99,8 +126,9 @@ fn initialize_ground(world: &mut World, width: i32, depth: i32, tile_size: f32) 
     );
 
     // initialize planes
-    let x0 = -(tile_size * width as f32 / 2.);
-    let z0 = -(tile_size * depth as f32 / 2.);
+    // last term because coords are in center of plane
+    let x0 = -(tile_size * width as f32 / 2.) + 0.5 * tile_size;
+    let z0 = -(tile_size * depth as f32 / 2.) + 0.5 * tile_size;
 
     for x in 0..width {
         for y in 0..depth {
@@ -111,14 +139,9 @@ fn initialize_ground(world: &mut World, width: i32, depth: i32, tile_size: f32) 
                 0.0,
                 z0 + (tile_size * y as f32),
             );
-            pos.set_scale(Vector3::new(
-                0.5 * tile_size,
-                0.5 * tile_size,
-                0.5 * tile_size,
-            ));
             world
                 .create_entity()
-                .with(pos)
+                .with(pos.clone())
                 .with(mesh.clone())
                 .with(mtl.clone())
                 .build();
@@ -147,6 +170,15 @@ fn initialize_ground(world: &mut World, width: i32, depth: i32, tile_size: f32) 
         debug_lines_component.add_direction(position, direction, main_color);
     }
     world.create_entity().with(debug_lines_component).build();
+
+    let x0 = x0 - 0.5 * tile_size;
+    let z0 = z0 - 0.5 * tile_size;
+    world.insert(WorldBorders {
+        left: x0,
+        right: x0 + tile_size * width as f32,
+        top: z0 + tile_size * depth as f32,
+        bottom: z0,
+    })
 }
 
 fn create_plane(world: &mut World) -> Handle<Mesh> {
@@ -169,14 +201,24 @@ fn create_albedo(world: &mut World) -> Handle<Texture> {
     })
 }
 
-fn initialize_camera(world: &mut World, camera_tilt: f32) {
+fn initialize_camera(world: &mut World) {
+    // load config
+    let camera_tilt = {
+        let camera_config = world.read_resource::<CameraConfig>();
+        camera_config.camera_tilt
+    };
+    assert!(-PI / 2.0 < camera_tilt && camera_tilt < 0.0);
+
     let mut transform = Transform::default();
-    transform.set_translation_xyz(0.0, 2.0, 5.0);
+    transform.set_translation_xyz(0.0, 8.0, 0.0);
     transform.prepend_rotation_x_axis(camera_tilt);
+    let camera = Camera::perspective(1.3, 1.0471975512, 0.1);
+
     world
         .create_entity()
-        .with(Camera::perspective(1.3, 1.0471975512, 0.1))
+        .with(camera)
         .with(transform)
+        .with(CameraBorders::default())
         .with(CameraControlTag)
         .build();
 }

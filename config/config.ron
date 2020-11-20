@@ -1,8 +1,8 @@
 (
     arena: (
-		depth: 20,  //map
-    	width: 15,	//map
-    	tile_size: 1,	//map
+		depth: 4,  //map
+    	width: 5,	//map
+    	tile_size: 2,	//map
 	),
 	camera: (
 		camera_tilt: -0.8,	//-0.60,

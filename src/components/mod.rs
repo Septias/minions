@@ -1,3 +1,3 @@
 mod camera;
 
-pub use self::camera::CameraControlTag;
+pub use self::camera::{CameraBorders, CameraControlTag};
