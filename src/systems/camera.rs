@@ -82,7 +82,6 @@ impl<'s> System<'s> for BorderSystem {
                 let distance = camera_translation.x - ray.at_distance(d).x;
                 camera_border.left = world_borders.left + distance.abs() - arena_config.tile_size;
                 camera_border.right = world_borders.right - distance.abs() + arena_config.tile_size;
-                println!("{}", camera_border.top);
             }
         }
     }
@@ -110,18 +109,23 @@ impl<'s> System<'s> for CameraSystem {
         {
             if focused {
                 let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
-                transform.move_forward(zoom);
-
-                let isometry = &mut transform.isometry_mut().translation.vector;
-                isometry.y = isometry.y.clamp(1.0, 5.0);
+                if transform.translation().y < 5.0 || zoom > 0.0 {
+                    transform.move_forward(zoom);
+                }
+                let translation = &mut transform.translation_mut();
+                translation.y = translation.y.clamp(1.0, 5.0);
 
                 let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
-                isometry.x += right * config.movement_factor;
-                isometry.x = isometry.x.clamp(camera_borders.left, camera_borders.right);
+                translation.x += right * config.movement_factor;
+                translation.x = translation
+                    .x
+                    .clamp(camera_borders.left, camera_borders.right);
 
                 let forward = input.axis_value(&AxisBinding::Forward).unwrap_or(0.0);
-                isometry.z += -forward * config.movement_factor;
-                isometry.z = isometry.z.clamp(camera_borders.bottom, camera_borders.top);
+                translation.z += -forward * config.movement_factor;
+                translation.z = translation
+                    .z
+                    .clamp(camera_borders.bottom, camera_borders.top);
             }
         }
     }
