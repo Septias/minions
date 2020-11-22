@@ -3,14 +3,13 @@ use crate::{
 };
 use amethyst::{
     controls::WindowFocus,
-    core::math::distance,
     core::{
         geometry::Plane,
-        math::{Point2, Point3, Vector2},
+        math::{Point2, Vector2},
         Transform,
     },
     derive::SystemDesc,
-    ecs::{Entities, Join, Read, ReadStorage, System, SystemData, Write, WriteStorage},
+    ecs::{Entities, Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::InputHandler,
     renderer::camera::{ActiveCamera, Camera},
     shred::ReadExpect,
@@ -19,11 +18,11 @@ use amethyst::{
 
 use crate::{components::CameraBorders, config::CameraConfig, input::MovementBindingTypes};
 
+#[derive(SystemDesc)]
 pub struct BorderSystem;
 
 // this System calculates the borderes of the camera
 // they have to change every-time the user zooms in/out
-// at the moment it runs every tick, so it's way too often
 impl<'s> System<'s> for BorderSystem {
     type SystemData = (
         Entities<'s>,
@@ -34,6 +33,7 @@ impl<'s> System<'s> for BorderSystem {
         Read<'s, ArenaConfig>,
         ReadExpect<'s, ScreenDimensions>,
         WriteStorage<'s, CameraBorders>,
+        Read<'s, InputHandler<MovementBindingTypes>>,
     );
 
     fn run(
@@ -47,37 +47,43 @@ impl<'s> System<'s> for BorderSystem {
             arena_config,
             screen_dimensions,
             mut camera_borders,
+            input,
         ): Self::SystemData,
     ) {
         let (width, height) = { (screen_dimensions.width(), screen_dimensions.height()) };
+        let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
+        // only recalculate borders when there is zoom-change
+        if zoom != 0.0 {
+            let mut camera_join = (&cameras, &transforms, &mut camera_borders).join();
+            if let Some((camera, camera_transform, mut camera_border)) = active_camera
+                .entity
+                .and_then(|a| camera_join.get(a, &entities))
+                .or_else(|| camera_join.next())
+            {
+                // bot and top borders
+                let ray = camera.screen_ray(
+                    Point2::new(width / 2.0, height),
+                    Vector2::new(width, height),
+                    &camera_transform,
+                );
+                let camera_translation = camera_transform.translation();
+                let d = ray.intersect_plane(&Plane::with_y(0.0)).unwrap();
+                let distance = camera_translation.z - ray.at_distance(d).z + arena_config.tile_size;
+                camera_border.top = world_borders.top + distance;
+                camera_border.bottom = world_borders.bottom + distance;
 
-        let mut camera_join = (&cameras, &transforms, &mut camera_borders).join();
-        if let Some((camera, camera_transform, mut camera_border)) = active_camera
-            .entity
-            .and_then(|a| camera_join.get(a, &entities))
-            .or_else(|| camera_join.next())
-        {
-            let ray = camera.screen_ray(
-                Point2::new(width / 2.0, height),
-                Vector2::new(width, height),
-                &camera_transform,
-            );
-            let camera_translation = camera_transform.translation();
-            let d = ray.intersect_plane(&Plane::with_y(0.0)).unwrap();
-
-            let distance = camera_translation.z - ray.at_distance(d).z + arena_config.tile_size;
-            camera_border.top = world_borders.top + distance;
-            camera_border.bottom = world_borders.bottom + distance;
-
-            let ray = camera.screen_ray(
-                Point2::new(0.0, height),
-                Vector2::new(width, height),
-                &camera_transform,
-            );
-            let d = ray.intersect_plane(&Plane::with_y(0.0)).unwrap();
-            let distance = camera_translation.x - ray.at_distance(d).x;
-            camera_border.left = world_borders.left + distance.abs() - arena_config.tile_size;
-            camera_border.right = world_borders.right - distance.abs() + arena_config.tile_size;
+                // right and left borders
+                let ray = camera.screen_ray(
+                    Point2::new(0.0, height),
+                    Vector2::new(width, height),
+                    &camera_transform,
+                );
+                let d = ray.intersect_plane(&Plane::with_y(0.0)).unwrap();
+                let distance = camera_translation.x - ray.at_distance(d).x;
+                camera_border.left = world_borders.left + distance.abs() - arena_config.tile_size;
+                camera_border.right = world_borders.right - distance.abs() + arena_config.tile_size;
+                println!("{}", camera_border.top);
+            }
         }
     }
 }
