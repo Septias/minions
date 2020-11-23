@@ -218,7 +218,7 @@ fn initialize_camera(world: &mut World) {
         .create_entity()
         .with(camera)
         .with(transform)
-        .with(CameraBorders::default())
+        .with(CameraBorders::default()) // they are useless before the first zoom
         .with(CameraControlTag)
         .build();
 }

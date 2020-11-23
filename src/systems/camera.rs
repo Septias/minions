@@ -2,19 +2,27 @@ use crate::{
     components::CameraControlTag, config::ArenaConfig, input::AxisBinding, minions::WorldBorders,
 };
 use amethyst::{
-    controls::WindowFocus,
+    controls::WindowFocus, 
     core::{
         geometry::Plane,
         math::{Point2, Vector2},
         Transform,
-    },
-    derive::SystemDesc,
-    ecs::{Entities, Join, Read, ReadStorage, System, SystemData, WriteStorage},
-    input::InputHandler,
-    renderer::camera::{ActiveCamera, Camera},
-    shred::ReadExpect,
-    window::ScreenDimensions,
-};
+        Time
+    }, 
+    derive::SystemDesc, 
+    ecs::{
+        Entities, 
+        Join, 
+        Read, 
+        ReadStorage, 
+        System, 
+        SystemData, 
+        WriteStorage
+    }, 
+    input::InputHandler, 
+    renderer::camera::{ActiveCamera, Camera}, 
+    shred::ReadExpect, 
+    window::ScreenDimensions};
 
 use crate::{components::CameraBorders, config::CameraConfig, input::MovementBindingTypes};
 
@@ -97,17 +105,19 @@ impl<'s> System<'s> for CameraSystem {
         Read<'s, WindowFocus>,
         Read<'s, InputHandler<MovementBindingTypes>>,
         Read<'s, CameraConfig>,
+        Read<'s, Time>,
         ReadStorage<'s, CameraBorders>,
     );
 
     fn run(
         &mut self,
-        (mut transforms, camera_tag, focus, input, config, camera_borders): Self::SystemData,
+        (mut transforms, camera_tag, focus, input, config, time, camera_borders): Self::SystemData,
     ) {
         let focused = focus.is_focused;
         for (transform, _, camera_borders) in (&mut transforms, &camera_tag, &camera_borders).join()
         {
             if focused {
+                let time_delta = time.delta_seconds();
                 let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
                 if transform.translation().y < 5.0 || zoom > 0.0 {
                     transform.move_forward(zoom);
@@ -116,13 +126,13 @@ impl<'s> System<'s> for CameraSystem {
                 translation.y = translation.y.clamp(1.0, 5.0);
 
                 let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
-                translation.x += right * config.movement_factor;
+                translation.x += right * config.movement_factor * time_delta;
                 translation.x = translation
                     .x
                     .clamp(camera_borders.left, camera_borders.right);
 
                 let forward = input.axis_value(&AxisBinding::Forward).unwrap_or(0.0);
-                translation.z += -forward * config.movement_factor;
+                translation.z += -forward * config.movement_factor * time_delta;
                 translation.z = translation
                     .z
                     .clamp(camera_borders.bottom, camera_borders.top);
