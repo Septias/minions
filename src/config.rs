@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct ArenaConfig {
-    pub depth: i32,
-    pub width: i32,
+    pub depth: i16,
+    pub width: i16,
     pub tile_size: f32,
 }
 

@@ -6,8 +6,6 @@ use amethyst::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::minions::WorldBorders;
-
 #[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PrefabData)]
 #[prefab(Component)]
 #[serde(deny_unknown_fields)]

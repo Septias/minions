@@ -2,15 +2,11 @@
 
 use amethyst::{
     assets::{AssetLoaderSystemData, Handle},
-    core::math::{distance, Point2, Vector2},
     core::{
         ecs::{Builder, WorldExt},
-        geometry::Plane,
         math::{Point3, Vector3},
         Transform,
     },
-    ecs::Component,
-    ecs::DenseVecStorage,
     prelude::*,
     renderer::palette::Srgb,
     renderer::Camera,
@@ -28,7 +24,7 @@ use amethyst::{
 use std::f32::consts::PI;
 
 use crate::{
-    components::{CameraBorders, CameraControlTag},
+    components::{CameraBorders, CameraControlTag, PieceInfo},
     config::{ArenaConfig, CameraConfig},
 };
 #[derive(Default)]
@@ -139,11 +135,13 @@ fn initialize_ground(world: &mut World) {
                 0.0,
                 z0 + (tile_size * y as f32),
             );
+            let piece_info = PieceInfo::new(x, y, mtl.clone());
             world
                 .create_entity()
                 .with(pos.clone())
                 .with(mesh.clone())
                 .with(mtl.clone())
+                .with(piece_info)
                 .build();
         }
     }

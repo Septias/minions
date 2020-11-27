@@ -1,30 +1,24 @@
 use crate::{
-    components::CameraControlTag, config::ArenaConfig, input::AxisBinding, minions::WorldBorders,
+    components::{CameraBorders, CameraControlTag},
+    config::{ArenaConfig, CameraConfig},
+    input::AxisBinding,
+    input::MovementBindingTypes,
+    minions::WorldBorders,
 };
 use amethyst::{
-    controls::WindowFocus, 
+    controls::WindowFocus,
     core::{
         geometry::Plane,
         math::{Point2, Vector2},
-        Transform,
-        Time
-    }, 
-    derive::SystemDesc, 
-    ecs::{
-        Entities, 
-        Join, 
-        Read, 
-        ReadStorage, 
-        System, 
-        SystemData, 
-        WriteStorage
-    }, 
-    input::InputHandler, 
-    renderer::camera::{ActiveCamera, Camera}, 
-    shred::ReadExpect, 
-    window::ScreenDimensions};
-
-use crate::{components::CameraBorders, config::CameraConfig, input::MovementBindingTypes};
+        Time, Transform,
+    },
+    derive::SystemDesc,
+    ecs::{Entities, Join, Read, ReadStorage, System, SystemData, WriteStorage},
+    input::InputHandler,
+    renderer::camera::{ActiveCamera, Camera},
+    shred::ReadExpect,
+    window::ScreenDimensions,
+};
 
 #[derive(SystemDesc)]
 pub struct BorderSystem;
@@ -116,6 +110,7 @@ impl<'s> System<'s> for CameraSystem {
         let focused = focus.is_focused;
         for (transform, _, camera_borders) in (&mut transforms, &camera_tag, &camera_borders).join()
         {
+			// window-focus
             if focused {
                 let time_delta = time.delta_seconds();
                 let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);

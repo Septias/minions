@@ -1,4 +1,4 @@
-use crate::systems::{BorderSystem, CameraSystem};
+use crate::systems::{BorderSystem, CameraSystem, HoverSystem};
 use amethyst::{
     controls::MouseFocusUpdateSystemDesc,
     core::bundle::SystemBundle,
@@ -20,11 +20,12 @@ impl<'a, 'b> SystemBundle<'a, 'b> for MinionsBundle {
             "camera_system",
             &["input_system", "camera_border"],
         );
-        builder.add(
+        /* builder.add(
             MouseFocusUpdateSystemDesc::default().build(world),
             "mouse_focus",
             &["camera_system"],
-        );
+        ); */
+        builder.add(HoverSystem, "hover_system", &[]);
         Ok(())
     }
 }
