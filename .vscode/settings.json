@@ -1,3 +1,4 @@
 {
-  "rust-analyzer.updates.askBeforeDownload": false
+  "rust-analyzer.updates.askBeforeDownload": false,
+  "editor.formatOnType": true,
 }

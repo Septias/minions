@@ -1,5 +1,3 @@
-#![feature(clamp)]
-
 use amethyst::{
     core::frame_limiter::FrameRateLimitStrategy,
     core::TransformBundle,

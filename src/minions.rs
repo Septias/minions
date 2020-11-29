@@ -98,28 +98,7 @@ fn initialize_ground(world: &mut World) {
             arena_config.tile_size,
         )
     };
-
-    // create material
-    let mtl = world.exec(
-        |(mtl_loader, tex_loader): (
-            AssetLoaderSystemData<'_, Material>,
-            AssetLoaderSystemData<'_, Texture>,
-        )| {
-            let metallic_roughness = tex_loader.load_from_data(
-                load_from_linear_rgba(LinSrgba::new(0.0, roughness, metallic, 0.0)).into(),
-                (),
-            );
-
-            mtl_loader.load_from_data(
-                Material {
-                    albedo: albedo.clone(),
-                    metallic_roughness,
-                    ..mat_defaults.clone()
-                },
-                (),
-            )
-        },
-    );
+    
 
     // initialize planes
     // last term because coords are in center of plane
@@ -134,8 +113,9 @@ fn initialize_ground(world: &mut World) {
                 x0 + (tile_size * x as f32),
                 0.0,
                 z0 + (tile_size * y as f32),
-            );
-            let piece_info = PieceInfo::new(x, y, mtl.clone());
+			);
+			let mtl = create_material(world, roughness, metallic, albedo.clone(), mat_defaults.clone());
+			let piece_info = PieceInfo::new(x, y, mtl.clone());
             world
                 .create_entity()
                 .with(pos.clone())
@@ -232,4 +212,28 @@ fn initialize_light(world: &mut World) {
     }
     .into();
     world.create_entity().with(light).with(pos).build();
+}
+
+fn create_material(world: &mut World, roughness: f32, metallic: f32, albedo: Handle<Texture>, mat_defaults: Material) -> Handle<Material>{
+	world.exec(
+        |(mtl_loader, tex_loader): (
+            AssetLoaderSystemData<'_, Material>,
+            AssetLoaderSystemData<'_, Texture>,
+        )| {
+			// inefficient to do that for every plane 
+            let metallic_roughness = tex_loader.load_from_data(
+                load_from_linear_rgba(LinSrgba::new(0.0, roughness, metallic, 0.0)).into(),
+                (),
+            );
+
+            mtl_loader.load_from_data(
+                Material {
+                    albedo: albedo.clone(),
+                    metallic_roughness,
+                    ..mat_defaults.clone()
+                },
+                (),
+            )
+        },
+    )
 }
