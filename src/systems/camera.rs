@@ -113,8 +113,10 @@ impl<'s> System<'s> for CameraSystem {
 			// window-focus
             if focused {
                 let time_delta = time.delta_seconds();
-                let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
-                if transform.translation().y < 5.0 || zoom > 0.0 {
+				let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
+				
+				let height = transform.translation().y;
+                if !( height >= 5.0 && zoom < 0.0) && !(height <= 1.0 && zoom > 0.0) {
                     transform.move_forward(zoom);
                 }
                 let translation = &mut transform.translation_mut();
