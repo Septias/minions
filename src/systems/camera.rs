@@ -115,12 +115,14 @@ impl<'s> System<'s> for CameraSystem {
                 let time_delta = time.delta_seconds();
 				let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
 				
+				let z =  transform.translation().z;
 				let height = transform.translation().y;
-                if !( height >= 5.0 && zoom < 0.0) && !(height <= 1.0 && zoom > 0.0) {
+				if !( height >= 15.0 && zoom < 0.0) && !(height <= 1.0 && zoom > 0.0) 
+				&& !( z >= camera_borders.top && zoom < 0.0) && !(z <= camera_borders.bottom && zoom > 0.0 ) {
                     transform.move_forward(zoom);
                 }
-                let translation = &mut transform.translation_mut();
-                translation.y = translation.y.clamp(1.0, 5.0);
+                let translation = transform.translation_mut();
+                translation.y = translation.y.clamp(1.0, 15.0);
 
                 let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
                 translation.x += right * config.movement_factor * time_delta;

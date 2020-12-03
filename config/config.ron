@@ -1,7 +1,7 @@
 (
     arena: (
-		depth: 4,  //map
-    	width: 5,	//map
+		depth: 7,  //map
+    	width: 12,	//map
     	tile_size: 2,	//map
 	),
 	camera: (

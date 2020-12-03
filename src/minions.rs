@@ -190,9 +190,9 @@ fn initialize_camera(world: &mut World) {
     assert!(-PI / 2.0 < camera_tilt && camera_tilt < 0.0);
 
     let mut transform = Transform::default();
-    transform.set_translation_xyz(0.0, 8.0, 0.0);
+    transform.set_translation_xyz(0.0, 7.0, 20.0);
     transform.prepend_rotation_x_axis(camera_tilt);
-    let camera = Camera::perspective(1.3, 1.0471975512, 0.1);
+    let camera = Camera::perspective(1.3, 1.0271975512, 0.1);
 
     world
         .create_entity()
