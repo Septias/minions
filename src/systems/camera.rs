@@ -21,7 +21,18 @@ use amethyst::{
 };
 
 #[derive(SystemDesc)]
-pub struct BorderSystem;
+pub struct BorderSystem{
+	first_run: bool,
+}
+
+impl Default for BorderSystem{
+	fn default() -> Self{
+		BorderSystem{
+			// so that the system runs on startup
+			first_run: true
+		}
+	}
+}
 
 // this System calculates the borderes of the camera
 // they have to change every-time the user zooms in/out
@@ -55,7 +66,8 @@ impl<'s> System<'s> for BorderSystem {
         let (width, height) = { (screen_dimensions.width(), screen_dimensions.height()) };
         let zoom = input.axis_value(&AxisBinding::Zoom).unwrap_or(0.0);
         // only recalculate borders when there is zoom-change
-        if zoom != 0.0 {
+        if zoom != 0.0 || self.first_run {
+			self.first_run = false; // this runs every loop but is only needed once
             let mut camera_join = (&cameras, &transforms, &mut camera_borders).join();
             if let Some((camera, camera_transform, mut camera_border)) = active_camera
                 .entity
@@ -117,12 +129,12 @@ impl<'s> System<'s> for CameraSystem {
 				
 				let z =  transform.translation().z;
 				let height = transform.translation().y;
-				if !( height >= 15.0 && zoom < 0.0) && !(height <= 1.0 && zoom > 0.0) 
+				if !( height >= 10.0 && zoom < 0.0) && !(height <= 1.0 && zoom > 0.0) 
 				&& !( z >= camera_borders.top && zoom < 0.0) && !(z <= camera_borders.bottom && zoom > 0.0 ) {
                     transform.move_forward(zoom);
                 }
                 let translation = transform.translation_mut();
-                translation.y = translation.y.clamp(1.0, 15.0);
+                translation.y = translation.y.clamp(1.0, 10.0);
 
                 let right = input.axis_value(&AxisBinding::Right).unwrap_or(0.0);
                 translation.x += right * config.movement_factor * time_delta;

@@ -15,7 +15,7 @@ impl<'a, 'b> SystemBundle<'a, 'b> for MinionsBundle {
         world: &mut World,
         builder: &mut DispatcherBuilder<'a, 'b>,
     ) -> Result<(), Error> {
-        builder.add(BorderSystem, "camera_border", &[]);
+        builder.add(BorderSystem::default(), "camera_border", &[]);
         builder.add(
             CameraSystem,
             "camera_system",

@@ -6,6 +6,6 @@
 	),
 	camera: (
 		camera_tilt: -0.8,	//-0.60,
-		movement_factor: 7.0,
+		movement_factor: 10.0,
 	)
 )
