@@ -85,7 +85,8 @@ fn initialize_debug_lines(world: &mut World) {
 fn initialize_ground(world: &mut World) {
     let mat_defaults = world.read_resource::<MaterialDefaults>().0.clone();
     let mesh = create_plane(world);
-    let albedo = create_albedo(world);
+	let basic_albedo = create_albedo(world, 0.005);
+	let hover_albedo = create_albedo(world, 0.01);
     let roughness = 1.0f32;
     let metallic = 1.0f32;
 
@@ -98,7 +99,9 @@ fn initialize_ground(world: &mut World) {
             arena_config.tile_size,
         )
     };
-    
+	
+	let basic_mtl = create_material(world, roughness, metallic, basic_albedo.clone(), mat_defaults.clone());
+	let hover_mtl = create_material(world, roughness, metallic, hover_albedo.clone(), mat_defaults.clone());
 
     // initialize planes
     // last term because coords are in center of plane
@@ -114,13 +117,12 @@ fn initialize_ground(world: &mut World) {
                 0.0,
                 z0 + (tile_size * y as f32),
 			);
-			let mtl = create_material(world, roughness, metallic, albedo.clone(), mat_defaults.clone());
-			let piece_info = PieceInfo::new(x, y, mtl.clone());
+			let piece_info = PieceInfo::new(x, y, basic_mtl.clone(), hover_mtl.clone());
             world
                 .create_entity()
                 .with(pos.clone())
                 .with(mesh.clone())
-                .with(mtl.clone())
+                .with(basic_mtl.clone())
                 .with(piece_info)
                 .build();
         }
@@ -170,10 +172,10 @@ fn create_plane(world: &mut World) -> Handle<Mesh> {
     })
 }
 
-fn create_albedo(world: &mut World) -> Handle<Texture> {
+fn create_albedo(world: &mut World, brightness: f32) -> Handle<Texture> {
     world.exec(|loader: AssetLoaderSystemData<'_, Texture>| {
         loader.load_from_data(
-            load_from_linear_rgba(LinSrgba::new(0.005, 0.005, 0.005, 1.0)).into(),
+            load_from_linear_rgba(LinSrgba::new(brightness, brightness, brightness, 1.0)).into(),
             (),
         )
     })

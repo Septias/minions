@@ -7,7 +7,8 @@ use amethyst::{
 pub struct PieceInfo {
     pub x: i16,
     pub z: i16,
-    pub material: Handle<Material>,
+	pub basic_material: Handle<Material>,
+	pub hover_material: Handle<Material>,
 }
 
 impl Component for PieceInfo {
@@ -15,7 +16,7 @@ impl Component for PieceInfo {
 }
 
 impl PieceInfo {
-    pub fn new(x: i16, z: i16, material: Handle<Material>) -> Self {
-        PieceInfo { x, z, material }
+    pub fn new(x: i16, z: i16, basic_material: Handle<Material>, hover_material: Handle<Material>) -> Self {
+        PieceInfo { x, z, basic_material, hover_material }
     }
 }

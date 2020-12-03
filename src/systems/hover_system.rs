@@ -1,14 +1,14 @@
 use amethyst::{
-	assets::{AssetLoaderSystemData, AssetStorage}, 
+	assets::Handle, 
 	core::{
 		math::{Point2, Vector2},
 		Transform,
 		geometry::Plane
 	}, 
-	ecs::{Entity, Entities, Join, ReadStorage, System, SystemData, Read, Write, ReadExpect}, 
+	ecs::{Entity, Entities, Join, ReadStorage, System, SystemData, Read, WriteStorage, ReadExpect}, 
 	input::InputHandler, 
 	derive::SystemDesc,
-	renderer::{ActiveCamera, Camera, Material, Texture, palette::LinSrgba, loaders::load_from_linear_rgba}, 
+	renderer::{ActiveCamera, Camera, Material}, 
 	window::ScreenDimensions
 };
 
@@ -45,8 +45,7 @@ impl<'s> System<'s> for HoverSystem {
         ReadExpect<'s, ScreenDimensions>,
         Read<'s, ArenaConfig>,
         Read<'s, WorldBorders>,
-        Write<'s, AssetStorage<Material>>,
-		AssetLoaderSystemData<'s, Texture>
+		WriteStorage<'s, Handle<Material>>,
     );
 
     fn run(
@@ -61,8 +60,7 @@ impl<'s> System<'s> for HoverSystem {
             screen_dimensions,
             arena_config,
             world_borders,
-			mut material_assets,
-            loader
+			mut material_handles,
         ): Self::SystemData,
     ) {
         if let Some(mouse_position) = input.mouse_position() {
@@ -96,16 +94,29 @@ impl<'s> System<'s> for HoverSystem {
 						
 					// change plane-albedo to a lighter gray
                     for (entity, piece_info) in (&entities, &piece_infos).join() {
-                        if piece_info.x == index_x as i16 && piece_info.z == index_z as i16 && self.current_hover != Some(entity){
-							self.current_hover = Some(entity);
-							let material = material_assets.get_mut(&piece_info.material).unwrap();
-							let albedo = loader.load_from_data(
-                                load_from_linear_rgba(
-                                    LinSrgba::new(0.5, 0.1, 0.1, 1.0)).into() , ());
-							material.albedo = albedo;
-						}
-                    }
-                };
+                        if piece_info.x == index_x as i16 && piece_info.z == index_z as i16 {
+                            if self.current_hover != Some(entity) {
+
+								if let Some(entity2) = self.current_hover {
+									material_handles.remove(entity2);
+                                	material_handles.insert(entity2, piece_info.basic_material.clone()).unwrap();
+								}
+
+								self.current_hover = Some(entity);
+                                material_handles.remove(entity);
+                                material_handles.insert(entity, piece_info.hover_material.clone()).unwrap();
+							}
+							break
+						} 
+					}
+				}
+				else {
+					if let Some(entity2) = self.current_hover.take() {
+						let piece_info = piece_infos.get(entity2).expect("Why is there no plane-info to this plane?");
+						material_handles.remove(entity2);
+						material_handles.insert(entity2, piece_info.basic_material.clone()).unwrap();
+					}
+				}
             }
         }
     }
